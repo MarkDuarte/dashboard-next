@@ -3,6 +3,7 @@ import { Box, Flex, SimpleGrid, Text, theme } from '@chakra-ui/react'
 import { ApexOptions } from 'apexcharts'
 import { Header } from '../components/Header'
 import { Sidebar } from '../components/Sidebar'
+import { useEffect, useState } from 'react'
 
 const Chart = dynamic(() => import('react-apexcharts'), {
   ssr: false,
@@ -60,6 +61,12 @@ const options: ApexOptions = {
 const series = [{ name: 'series1', data: [31, 120, 10, 89, 43, 20, 68, 110] }]
 
 export default function Dashboard() {
+  const [assembleGraphics, setAssembleGraphics] = useState(false)
+
+  useEffect(() => {
+    setAssembleGraphics(true)
+  }, [])
+
   return (
     <Flex direction="column" h="100vh">
       <Header />
@@ -67,17 +74,34 @@ export default function Dashboard() {
       <Flex w="100%" my={6} maxWidth={1480} mx="auto" px="6">
         <Sidebar />
 
-        <SimpleGrid flex={1} gap={4} minChildWidth="320px">
-          <Box p={['6', '8']} bg="gray.800" borderRadius={8} pb={4}>
-            <Text>Incritos da Semana</Text>
-            <Chart options={options} series={series} type="area" height={160} />
-          </Box>
-
-          <Box p={['6', '8']} bg="gray.800" borderRadius={8}>
-            <Text>Taxa de Abertura</Text>
-            <Chart options={options} series={series} type="area" height={160} />
-          </Box>
-        </SimpleGrid>
+        {assembleGraphics && (
+          <SimpleGrid flex="1" gap="4" minChildWidth="320px">
+            <Box p={['6', '8']} bg="gray.800" borderRadius={8} pb="4">
+              <Text fontSize="lg" mb="4">
+                Inscritos da semana
+              </Text>
+              {/* serires dados do grafico */}
+              {/* options as configs */}
+              <Chart
+                type="area"
+                height={160}
+                options={options}
+                series={series}
+              />
+            </Box>
+            <Box p={['6', '8']} bg="gray.800" borderRadius={8}>
+              <Text fontSize="lg" mb="4">
+                Taxa de abertura
+              </Text>
+              <Chart
+                type="area"
+                height={160}
+                options={options}
+                series={series}
+              />
+            </Box>
+          </SimpleGrid>
+        )}
       </Flex>
     </Flex>
   )
