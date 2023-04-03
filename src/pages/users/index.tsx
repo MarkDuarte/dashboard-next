@@ -14,11 +14,17 @@ import {
   Tbody,
   Td,
   Text,
+  useBreakpointValue,
 } from '@chakra-ui/react'
 import { RiAddLine, RiEditLine } from 'react-icons/ri'
 import { Header } from '../../components/Header'
 
 export default function UserList() {
+  const isWideVerson = useBreakpointValue({
+    base: false,
+    lg: true,
+  })
+
   return (
     <Box>
       <Header />
@@ -46,17 +52,17 @@ export default function UserList() {
           <Table colorScheme="whiteAlpha">
             <Thead>
               <Tr>
-                <Th px={6} color="gray.300" width={8}>
+                <Th px={['4', '4', '6']} color="gray.300" width={8}>
                   <Checkbox colorScheme="pink" />
                 </Th>
                 <Th>Usuário</Th>
-                <Th>Data Cadastro</Th>
+                {isWideVerson && <Th>Data Cadastro</Th>}
                 <Th width={8}></Th>
               </Tr>
             </Thead>
             <Tbody>
               <Tr>
-                <Td px={6}>
+                <Td px={['4', '4', '6']}>
                   <Checkbox colorScheme="pink" />
                 </Td>
                 <Td>
@@ -67,17 +73,19 @@ export default function UserList() {
                     </Text>
                   </Box>
                 </Td>
-                <Td>28 de Março, 2023</Td>
+                {isWideVerson && <Td>28 de Março, 2023</Td>}
                 <Td>
-                  <Button
-                    as="a"
-                    size="sm"
-                    fontSize="sm"
-                    colorScheme="purple"
-                    leftIcon={<Icon as={RiEditLine} fontSize={20} />}
-                  >
-                    Editar
-                  </Button>
+                  {isWideVerson && (
+                    <Button
+                      as="a"
+                      size="sm"
+                      fontSize="sm"
+                      colorScheme="purple"
+                      leftIcon={<Icon as={RiEditLine} fontSize={20} />}
+                    >
+                      Editar
+                    </Button>
+                  )}
                 </Td>
               </Tr>
             </Tbody>
