@@ -10,7 +10,7 @@ import {
 } from '@chakra-ui/react'
 
 import { SidebarNav } from './SidebarNav'
-import { useSidebarDrawer } from '../contexts/SidebarDrawerContext'
+import { useSidebarDrawer } from '../../contexts/SidebarDrawerContext'
 
 export function Sidebar() {
   const { isOpen, onClose } = useSidebarDrawer()
