@@ -1,5 +1,5 @@
 import Link from 'next/link'
-import { useEffect, useState } from 'react'
+import { useState } from 'react'
 import { useQuery } from 'react-query'
 import {
   Box,
@@ -25,15 +25,35 @@ import { Pagination } from '@/components/Pagination'
 import { Sidebar } from '@/components/Sidebar'
 import { Header } from '../../components/Header'
 
+interface UserProps {
+  id: string
+  name: string
+  email: string
+  createdAt: string
+}
+
 export default function UserList() {
   const { data, isLoading, error } = useQuery('users', async () => {
     const response = await fetch('http://localhost:3000/api/users')
-    const data = response.json()
+    const data = await response.json()
 
-    return data
+    const users = data.users.map(
+      ({ id, name, email, createdAt }: UserProps) => {
+        return {
+          id,
+          name,
+          email,
+          createdAt: new Date(createdAt).toLocaleDateString('pt-BR', {
+            day: '2-digit',
+            month: 'long',
+            year: 'numeric',
+          }),
+        }
+      },
+    )
+
+    return users
   })
-
-  console.log(data)
 
   const isWideVersion = useBreakpointValue({
     base: false,
@@ -92,33 +112,35 @@ export default function UserList() {
                   </Tr>
                 </Thead>
                 <Tbody>
-                  <Tr>
-                    <Td px={['4', '4', '6']}>
-                      <Checkbox colorScheme="pink" />
-                    </Td>
-                    <Td>
-                      <Box>
-                        <Text fontWeight="bold">Marcos Duarte</Text>
-                        <Text fontSize="sm" color="gray.300">
-                          marcosduarte1994@gmail.com
-                        </Text>
-                      </Box>
-                    </Td>
-                    {isWideVersion && <Td>28 de Março, 2023</Td>}
-                    <Td>
-                      {isWideVersion && (
-                        <Button
-                          as="a"
-                          size="sm"
-                          fontSize="sm"
-                          colorScheme="purple"
-                          leftIcon={<Icon as={RiEditLine} fontSize={20} />}
-                        >
-                          Editar
-                        </Button>
-                      )}
-                    </Td>
-                  </Tr>
+                  {data.map(({ id, name, email, createdAt }: UserProps) => (
+                    <Tr key={id}>
+                      <Td px={['4', '4', '6']}>
+                        <Checkbox colorScheme="pink" />
+                      </Td>
+                      <Td>
+                        <Box>
+                          <Text fontWeight="bold">{name}</Text>
+                          <Text fontSize="sm" color="gray.300">
+                            {email}
+                          </Text>
+                        </Box>
+                      </Td>
+                      {isWideVersion && <Td>{createdAt}</Td>}
+                      <Td>
+                        {isWideVersion && (
+                          <Button
+                            as="a"
+                            size="sm"
+                            fontSize="sm"
+                            colorScheme="purple"
+                            leftIcon={<Icon as={RiEditLine} fontSize={20} />}
+                          >
+                            Editar
+                          </Button>
+                        )}
+                      </Td>
+                    </Tr>
+                  ))}
                 </Tbody>
               </Table>
               <Pagination />
