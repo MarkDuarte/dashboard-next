@@ -1,6 +1,5 @@
 import Link from 'next/link'
 import { useState } from 'react'
-import { useQuery } from 'react-query'
 import {
   Box,
   Button,
@@ -24,36 +23,10 @@ import { RiAddLine, RiEditLine } from 'react-icons/ri'
 import { Pagination } from '@/components/Pagination'
 import { Sidebar } from '@/components/Sidebar'
 import { Header } from '../../components/Header'
-
-interface UserProps {
-  id: string
-  name: string
-  email: string
-  createdAt: string
-}
+import { useUsers } from '@/services/hooks/useUsers'
 
 export default function UserList() {
-  const { data, isLoading, error } = useQuery('users', async () => {
-    const response = await fetch('http://localhost:3000/api/users')
-    const data = await response.json()
-
-    const users = data.users.map(
-      ({ id, name, email, createdAt }: UserProps) => {
-        return {
-          id,
-          name,
-          email,
-          createdAt: new Date(createdAt).toLocaleDateString('pt-BR', {
-            day: '2-digit',
-            month: 'long',
-            year: 'numeric',
-          }),
-        }
-      },
-    )
-
-    return users
-  })
+  const { data, isLoading, error } = useUsers()
 
   const isWideVersion = useBreakpointValue({
     base: false,
@@ -112,20 +85,20 @@ export default function UserList() {
                   </Tr>
                 </Thead>
                 <Tbody>
-                  {data.map(({ id, name, email, createdAt }: UserProps) => (
-                    <Tr key={id}>
+                  {data.map((item) => (
+                    <Tr key={item.id}>
                       <Td px={['4', '4', '6']}>
                         <Checkbox colorScheme="pink" />
                       </Td>
                       <Td>
                         <Box>
-                          <Text fontWeight="bold">{name}</Text>
+                          <Text fontWeight="bold">{item.name}</Text>
                           <Text fontSize="sm" color="gray.300">
-                            {email}
+                            {item.email}
                           </Text>
                         </Box>
                       </Td>
-                      {isWideVersion && <Td>{createdAt}</Td>}
+                      {isWideVersion && <Td>{item.createdAt}</Td>}
                       <Td>
                         {isWideVersion && (
                           <Button
